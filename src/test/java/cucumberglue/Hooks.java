@@ -2,30 +2,34 @@ package cucumberglue;
 
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebDriver;
+import runner.browser_manager.DriverManager;
+import runner.browser_manager.DriverManagerFactory;
+import runner.browser_manager.DriverType;
 
 public class Hooks {
 
-    private static ChromeDriver driver;
-    private int escenario = 0;
+    private static WebDriver driver;
+    private static int escenario = 0;
+    private DriverManager driverManager;
 
     @Before
     public void setUp(){
         escenario++;
         System.out.println("Se esta ejecutando el escenario nro: "+ escenario);
-        System.setProperty("webdriver.chrome.driver","src/test/resources/chromedriver/chromedriver.exe");
-        driver = new ChromeDriver();
+        driverManager =  DriverManagerFactory.getManager(DriverType.FIREFOX);
+        driver = driverManager.getDriver();
         driver.get("https://imalittletester.com/");
         driver.manage().window().maximize();
     }
 
     @After
-    public void finalizar(){
+    public void tearDown(){
         System.out.println("Ha finalizado el escenario "+ escenario +" correctacmente.");
-        driver.quit();
+        driverManager.quitDriver();
     }
 
-    public static ChromeDriver getDriver(){
+    public static WebDriver getDriver(){
         return driver;
     }
 }
